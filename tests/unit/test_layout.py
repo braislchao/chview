@@ -62,7 +62,7 @@ class TestCalculatePositions:
         """Adjacent levels must be exactly x_spacing (320) apart."""
         positions = calculate_positions(linear_lineage)
         x_diff = positions["db.MV"][0] - positions["db.A"][0]
-        assert x_diff == pytest.approx(320.0)
+        assert x_diff == pytest.approx(380.0)
 
 
 class TestGetConnectedSubgraph:

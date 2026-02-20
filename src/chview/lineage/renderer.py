@@ -13,10 +13,10 @@ from chview.lineage.layout import calculate_positions, get_connected_subgraph
 
 # Node visual styles indexed by engine type
 _NODE_STYLES: dict[str, dict[str, str]] = {
-    "source": {"bg": "#E6F5F6", "border": "#007C85"},
-    "MaterializedView": {"bg": "#FDE8EA", "border": "#E51943"},
-    "target": {"bg": "#FAF0E8", "border": "#C4836A"},
-    "implicit": {"bg": "#F0EDED", "border": "#B0A8A8"},
+    "source":           {"bg": "#EEF8F8", "border": "#0E9AA7", "badge_bg": "#D4F0F0", "badge_text": "#0E9AA7", "shadow": "rgba(14,154,167,0.12)", "label": "Source",    "icon": "\u22B3"},
+    "MaterializedView": {"bg": "#FEF0F2", "border": "#E51943", "badge_bg": "#FCDDE3", "badge_text": "#C41538", "shadow": "rgba(229,25,67,0.10)",   "label": "Mat. View", "icon": "\u2B21"},
+    "target":           {"bg": "#FBF4EE", "border": "#D4956F", "badge_bg": "#F5E4D5", "badge_text": "#B87A55", "shadow": "rgba(212,149,111,0.12)",  "label": "Target",    "icon": "\u22B2"},
+    "implicit":         {"bg": "#F5F4F4", "border": "#B8B0B0", "badge_bg": "#EAE7E7", "badge_text": "#8A8282", "shadow": "rgba(176,168,168,0.10)",  "label": "Implicit",  "icon": "\u2218"},
 }
 
 
@@ -35,6 +35,7 @@ def _build_flow_state(
     positions: dict[str, tuple[float, float]],
     error_views: set[str],
     connected: Optional[set[str]],
+    highlight_node: Optional[str] = None,
 ) -> StreamlitFlowState:
     """Build a StreamlitFlowState with styles based on the connected subgraph."""
     flow_nodes = []
@@ -45,8 +46,10 @@ def _build_flow_state(
         style = _NODE_STYLES.get(engine, _NODE_STYLES["source"])
         has_error = full_name in error_views
         is_dimmed = connected is not None and full_name not in connected
+        is_highlighted = full_name == highlight_node
 
-        name = node.name if len(node.name) <= 30 else node.name[:27] + "..."
+        name = node.name if len(node.name) <= 35 else node.name[:32] + "..."
+        content = f"**{style['icon']} {style['label']}**\n\n{name}"
 
         has_incoming = any(e.target == full_name for e in lineage.edges)
         has_outgoing = any(e.source == full_name for e in lineage.edges)
@@ -57,36 +60,38 @@ def _build_flow_state(
         else:
             node_type = "output"
 
-        if engine == "MaterializedView":
-            border_radius = "50%"
-            min_width = "100px"
-            padding = "16px 20px"
-        else:
-            border_radius = "10px"
-            min_width = "120px"
-            padding = "10px 14px"
+        border_color = style["border"]
+        shadow_color = style["shadow"]
 
         node_style: dict[str, str] = {
             "background": style["bg"],
-            "border": f"2px solid {style['border']}",
-            "borderRadius": border_radius,
-            "padding": padding,
-            "fontSize": "13px",
+            "border": f"2px solid {border_color}",
+            "borderRadius": "12px",
+            "padding": "16px 20px",
+            "fontSize": "14px",
             "fontFamily": "Inter, -apple-system, sans-serif",
-            "fontWeight": "500",
+            "fontWeight": "400",
             "color": "#25253D",
-            "minWidth": min_width,
-            "textAlign": "center",
+            "width": "260px",
+            "textAlign": "left",
             "cursor": "pointer",
-            "boxShadow": "0 1px 3px rgba(0,0,0,0.1)",
+            "boxShadow": f"0 2px 8px {shadow_color}",
         }
+
+        if is_highlighted and not is_dimmed:
+            node_style["boxShadow"] = (
+                f"0 0 0 3px {border_color}40, 0 4px 12px {shadow_color}"
+            )
 
         if has_error and not is_dimmed:
             node_style["border"] = "2px solid #E51943"
-            node_style["boxShadow"] = "0 0 10px rgba(229, 25, 67, 0.3)"
+            node_style["boxShadow"] = (
+                "0 0 0 3px rgba(229,25,67,0.15), 0 2px 8px rgba(229,25,67,0.20)"
+            )
 
         if is_dimmed:
-            node_style["opacity"] = "0.12"
+            node_style["opacity"] = "0.15"
+            node_style["filter"] = "grayscale(0.5)"
             node_style["boxShadow"] = "none"
 
         pos = positions.get(full_name, (0, 0))
@@ -95,7 +100,7 @@ def _build_flow_state(
             StreamlitFlowNode(
                 id=full_name,
                 pos=pos,
-                data={"content": name},
+                data={"content": content},
                 node_type=node_type,
                 source_position="right",
                 target_position="left",
@@ -109,21 +114,22 @@ def _build_flow_state(
 
     for i, edge in enumerate(lineage.edges):
         is_mv = edge.source in lineage.mv_names
-        edge_color = "#E51943" if is_mv else "#007C85"
+        edge_color = "#E51943" if is_mv else "#0E9AA7"
         is_dimmed = connected is not None and (
             edge.source not in connected or edge.target not in connected
         )
 
-        edge_style: dict[str, str] = {"stroke": edge_color, "strokeWidth": "2"}
+        edge_style: dict[str, str] = {"stroke": edge_color, "strokeWidth": "1.5"}
         if is_dimmed:
-            edge_style["opacity"] = "0.06"
+            edge_style["opacity"] = "0.08"
+            edge_style["strokeWidth"] = "1"
 
         flow_edges.append(
             StreamlitFlowEdge(
                 id=f"e{i}",
                 source=edge.source,
                 target=edge.target,
-                edge_type="default",
+                edge_type="smoothstep",
                 animated=not is_dimmed,
                 marker_end={"type": "arrowclosed", "color": edge_color},
                 style=edge_style,
@@ -175,7 +181,7 @@ def render_lineage_graph(
             for node_id in lineage.nodes
         }
 
-        flow_state = _build_flow_state(lineage, positions, error_views, connected)
+        flow_state = _build_flow_state(lineage, positions, error_views, connected, highlight_node)
         st.session_state[state_key] = flow_state
 
     first_render = not st.session_state.get(ever_rendered_key, False)
@@ -197,6 +203,7 @@ def render_lineage_graph(
         min_zoom=0.3,
         allow_new_edges=False,
         hide_watermark=True,
+        style={"background": "#fafbfc"},
     )
 
     # Cache positions from component result (preserves drag across highlight changes)

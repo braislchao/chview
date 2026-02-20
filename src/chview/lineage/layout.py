@@ -3,11 +3,53 @@
 from chview.lineage.graph import LineageGraph
 
 
-def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]:
-    """Calculate (x, y) positions for all nodes using topological level layout.
+def _find_clusters(lineage: LineageGraph) -> list[set[str]]:
+    """Find connected components (clusters) in the graph.
 
-    Assigns nodes to columns by their topological level (depth from sources),
-    then sorts within each column to minimize edge crossings.
+    Each cluster is a set of node IDs that are transitively connected.
+    """
+    downstream: dict[str, list[str]] = {}
+    upstream: dict[str, list[str]] = {}
+    for edge in lineage.edges:
+        downstream.setdefault(edge.source, []).append(edge.target)
+        upstream.setdefault(edge.target, []).append(edge.source)
+
+    visited: set[str] = set()
+    clusters: list[set[str]] = []
+
+    for node_id in lineage.nodes:
+        if node_id in visited:
+            continue
+        cluster: set[str] = set()
+        queue = [node_id]
+        while queue:
+            n = queue.pop(0)
+            if n in cluster:
+                continue
+            cluster.add(n)
+            for child in downstream.get(n, []):
+                if child not in cluster:
+                    queue.append(child)
+            for parent in upstream.get(n, []):
+                if parent not in cluster:
+                    queue.append(parent)
+        visited |= cluster
+        clusters.append(cluster)
+
+    return clusters
+
+
+def _get_cluster_sort_key(cluster: set[str]) -> str:
+    """Sort key for a cluster: alphabetically by earliest source node name."""
+    return min(sorted(cluster))
+
+
+def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]:
+    """Calculate (x, y) positions for all nodes using cluster-aware layout.
+
+    Groups nodes into connected clusters (pipelines), lays out each cluster
+    as a vertical band sorted by source name, and separates clusters with
+    gaps for visual clarity.
 
     Args:
         lineage: The lineage graph to lay out
@@ -15,6 +57,10 @@ def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]
     Returns:
         Dict mapping node_id -> (x, y) position
     """
+    if not lineage.nodes:
+        return {}
+
+    # --- Compute topological levels ---
     levels: dict[str, int] = {}
     visiting: set[str] = set()
 
@@ -22,7 +68,6 @@ def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]
         if node_id in levels:
             return levels[node_id]
         if node_id in visiting:
-            # Cycle detected — break it by treating this node as a root
             levels[node_id] = 0
             return 0
         visiting.add(node_id)
@@ -38,41 +83,68 @@ def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]
     for node_id in lineage.nodes:
         get_level(node_id)
 
-    nodes_by_level: dict[int, list[str]] = {}
-    for node_id, level in levels.items():
-        nodes_by_level.setdefault(level, []).append(node_id)
-
+    # --- Build adjacency maps ---
     incoming_map: dict[str, list[str]] = {}
     for e in lineage.edges:
         incoming_map.setdefault(e.target, []).append(e.source)
 
+    # --- Find and sort clusters ---
+    clusters = _find_clusters(lineage)
+    clusters.sort(key=_get_cluster_sort_key)
+
+    # --- Layout constants ---
+    x_spacing = 380
+    y_spacing = 130
+    cluster_gap = 80  # extra vertical gap between clusters
+
     positions: dict[str, tuple[float, float]] = {}
-    x_spacing = 320
-    y_spacing = 110
+    current_y = 0.0
 
-    for level in sorted(nodes_by_level.keys()):
-        nodes = nodes_by_level[level]
-        x = float(level * x_spacing + 50)
+    for cluster in clusters:
+        # Group cluster nodes by level
+        cluster_by_level: dict[int, list[str]] = {}
+        for node_id in cluster:
+            lvl = levels[node_id]
+            cluster_by_level.setdefault(lvl, []).append(node_id)
 
-        if level == 0:
-            nodes_sorted = sorted(nodes)
-        else:
+        # Sort within each level: level 0 alphabetically, others by parent y
+        for lvl in sorted(cluster_by_level.keys()):
+            nodes = cluster_by_level[lvl]
+            if lvl == 0:
+                nodes.sort()
+            else:
+                def sort_key(n: str, _map=incoming_map, _pos=positions) -> float:
+                    parents = _map.get(n, [])
+                    positioned = [_pos[p][1] for p in parents if p in _pos]
+                    return sum(positioned) / len(positioned) if positioned else 0.0
 
-            def sort_key(n: str) -> float:
-                parents = incoming_map.get(n, [])
-                if parents:
-                    return sum(
-                        positions[p][1] for p in parents if p in positions
-                    ) / len(parents)
-                return 0.0
+                nodes.sort(key=sort_key)
+            cluster_by_level[lvl] = nodes
 
-            nodes_sorted = sorted(nodes, key=sort_key)
+        # Find the tallest column in this cluster
+        max_rows = max(len(ns) for ns in cluster_by_level.values())
 
-        total_height = (len(nodes_sorted) - 1) * y_spacing
-        start_y = -total_height / 2
-        for i, node_id in enumerate(nodes_sorted):
-            y = start_y + i * y_spacing
-            positions[node_id] = (x, y)
+        # Place nodes: x by level, y within cluster band
+        for lvl in sorted(cluster_by_level.keys()):
+            nodes = cluster_by_level[lvl]
+            x = float(lvl * x_spacing + 80)
+            # Center this column vertically within the cluster band
+            col_height = (len(nodes) - 1) * y_spacing
+            band_height = (max_rows - 1) * y_spacing
+            y_offset = current_y + (band_height - col_height) / 2
+            for i, node_id in enumerate(nodes):
+                y = y_offset + i * y_spacing
+                positions[node_id] = (x, y)
+
+        # Advance y cursor past this cluster
+        band_height = (max_rows - 1) * y_spacing
+        current_y += band_height + cluster_gap + y_spacing
+
+    # Center everything around y=0
+    if positions:
+        all_ys = [p[1] for p in positions.values()]
+        y_center = (min(all_ys) + max(all_ys)) / 2
+        positions = {nid: (x, y - y_center) for nid, (x, y) in positions.items()}
 
     return positions
 

@@ -11,14 +11,18 @@ def inject_custom_css() -> None:
     /* --- Factorial Design System Palette --- */
     :root {
         --radical-red: #E51943;
-        --viridian-green: #007C85;
+        --viridian-green: #0E9AA7;
         --ebony-clay: #25253D;
         --red-light: #FDE8EA;
-        --viridian-light: #E6F5F6;
+        --viridian-light: #EEF8F8;
+        --target-color: #D4956F;
+        --target-light: #FBF4EE;
+        --implicit-color: #B8B0B0;
+        --implicit-light: #F5F4F4;
         --warning: #E5A019;
         --warning-light: #FFF5E0;
         --error-light: #FDE8EA;
-        --success-light: #E6F5F6;
+        --success-light: #EEF8F8;
     }
 
     /* --- Fonts --- */
@@ -83,9 +87,10 @@ def inject_custom_css() -> None:
 
     /* --- Metric cards --- */
     div[data-testid="stMetric"] {
-        border: 1px solid rgba(128, 128, 128, 0.2);
-        border-radius: 8px;
+        border: 1px solid rgba(128, 128, 128, 0.15);
+        border-radius: 10px;
         padding: 1rem 1.25rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     div[data-testid="stMetric"] label {
         font-size: 0.7rem !important;
@@ -143,6 +148,9 @@ def inject_custom_css() -> None:
          are in an iframe and styled via inline node styles) --- */
     iframe[title="streamlit_flow.streamlit_flow"] {
         border: none !important;
+        border-radius: 12px;
+        background: #fafbfc;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         height: calc(100vh - 320px) !important;
         min-height: 400px;
     }

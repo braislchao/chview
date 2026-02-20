@@ -7,7 +7,7 @@ import streamlit as st
 
 from chview.components.tables import render_node_detail_sidebar
 from chview.lineage.graph import build_lineage
-from chview.lineage.renderer import render_lineage_graph
+from chview.lineage.renderer import _NODE_STYLES, _resolve_engine, render_lineage_graph
 
 
 def render_lineage_page(
@@ -62,25 +62,18 @@ def render_lineage_page(
             st.metric("Targets", len(lineage.target_names))
 
         # Legend
+        legend_items = ""
+        for style in _NODE_STYLES.values():
+            legend_items += (
+                '<div style="display: flex; align-items: center; gap: 8px;">'
+                f'<span style="width: 28px; height: 16px; background: {style["bg"]}; border: 2px solid {style["border"]}; border-radius: 4px; display: inline-block;"></span>'
+                f'<span style="font-size: 13px; color: #495057; font-weight: 500;">{style["label"]}</span>'
+                "</div>"
+            )
         st.markdown(
-            '<div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 1rem; padding: 12px 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">'
-            '<div style="display: flex; align-items: center; gap: 8px;">'
-            '<span style="width: 14px; height: 14px; background: #E6F5F6; border: 2px solid #007C85; border-radius: 3px; display: inline-block;"></span>'
-            '<span style="font-size: 13px; color: #495057; font-weight: 500;">Source</span>'
-            "</div>"
-            '<div style="display: flex; align-items: center; gap: 8px;">'
-            '<span style="width: 16px; height: 16px; background: #FDE8EA; border: 2px solid #E51943; border-radius: 50%; display: inline-block;"></span>'
-            '<span style="font-size: 13px; color: #495057; font-weight: 500;">Materialized View</span>'
-            "</div>"
-            '<div style="display: flex; align-items: center; gap: 8px;">'
-            '<span style="width: 14px; height: 14px; background: #FAF0E8; border: 2px solid #C4836A; border-radius: 3px; display: inline-block;"></span>'
-            '<span style="font-size: 13px; color: #495057; font-weight: 500;">Target</span>'
-            "</div>"
-            '<div style="display: flex; align-items: center; gap: 8px;">'
-            '<span style="width: 14px; height: 14px; background: #F0EDED; border: 2px solid #B0A8A8; border-radius: 3px; display: inline-block;"></span>'
-            '<span style="font-size: 13px; color: #495057; font-weight: 500;">Implicit</span>'
-            "</div>"
-            "</div>",
+            f'<div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 1rem; padding: 12px 20px; background: linear-gradient(135deg, #fafbfc, #f5f6f8); border-radius: 8px; border: 1px solid #e9ecef;">'
+            f"{legend_items}"
+            f"</div>",
             unsafe_allow_html=True,
         )
 
@@ -105,9 +98,18 @@ def render_lineage_page(
         with toolbar_left:
             if selected_id and selected_id in lineage.nodes:
                 node = lineage.nodes[selected_id]
+                engine = _resolve_engine(selected_id, lineage)
+                style = _NODE_STYLES.get(engine, _NODE_STYLES["source"])
+                badge_html = (
+                    f'<span style="display: inline-block; padding: 2px 10px; border-radius: 6px;'
+                    f' background: {style["badge_bg"]}; color: {style["badge_text"]};'
+                    f' font-size: 0.78rem; font-weight: 600; margin-right: 8px;">'
+                    f'{style["label"]}</span>'
+                )
                 st.markdown(
                     f'<div style="font-size: 0.95rem; font-weight: 600; padding: 0.4rem 0;">'
-                    f'<span style="opacity: 0.5;">Selected:</span> {node.database}.<span style="color: #E51943;">{node.name}</span>'
+                    f"{badge_html}"
+                    f'{node.database}.<span style="color: {style["border"]};">{node.name}</span>'
                     f"</div>",
                     unsafe_allow_html=True,
                 )
@@ -143,7 +145,17 @@ def render_lineage_page(
                     "MATERIALIZED VIEW" if selected_id in lineage.mv_names else "TABLE"
                 )
 
-                st.markdown("**Details**")
+                panel_engine = _resolve_engine(selected_id, lineage)
+                panel_style = _NODE_STYLES.get(panel_engine, _NODE_STYLES["source"])
+                st.markdown(
+                    f'<div style="font-size: 0.95rem; font-weight: 600; padding: 0.3rem 0 0.5rem;">'
+                    f'<span style="display: inline-block; padding: 2px 10px; border-radius: 6px;'
+                    f' background: {panel_style["badge_bg"]}; color: {panel_style["badge_text"]};'
+                    f' font-size: 0.78rem; font-weight: 600; margin-right: 6px;">'
+                    f'{panel_style["label"]}</span>'
+                    f"{node.name}</div>",
+                    unsafe_allow_html=True,
+                )
                 col1, col2 = st.columns(2)
                 with col1:
                     st.metric("Database", node.database)
