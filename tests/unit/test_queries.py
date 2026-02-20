@@ -1,6 +1,5 @@
 """Unit tests for chview.db.queries."""
 
-import pytest
 
 from chview.db.queries import (
     build_database_filter,

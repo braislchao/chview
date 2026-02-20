@@ -4,8 +4,8 @@ from typing import Optional
 
 import pandas as pd
 
-from chview.db.client import ClickHouseClient
 from chview.db import queries
+from chview.db.client import ClickHouseClient
 
 
 class ClickHouseRepository:

@@ -1,8 +1,11 @@
 """Unit tests for chview.lineage.parser."""
 
-import pytest
 
-from chview.lineage.parser import _qualify_table_name, parse_source_tables, parse_target_table
+from chview.lineage.parser import (
+    _qualify_table_name,
+    parse_source_tables,
+    parse_target_table,
+)
 
 
 class TestQualifyTableName:

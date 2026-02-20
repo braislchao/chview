@@ -1,6 +1,5 @@
 """Unit tests for chview.core.formatters."""
 
-import pytest
 
 from chview.core.formatters import (
     format_bytes,

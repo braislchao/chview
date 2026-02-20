@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from chview.components.charts import render_storage_treemap
-from chview.components.tables import render_table_detail, render_schema_table
+from chview.components.tables import render_table_detail
 from chview.core.formatters import format_bytes, format_number
 
 

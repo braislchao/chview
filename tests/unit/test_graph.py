@@ -1,9 +1,8 @@
 """Unit tests for chview.lineage.graph."""
 
 import pandas as pd
-import pytest
 
-from chview.lineage.graph import LineageEdge, LineageGraph, TableNode, build_lineage
+from chview.lineage.graph import LineageEdge, TableNode, build_lineage
 
 
 class TestTableNode:

@@ -6,7 +6,6 @@ import streamlit as st
 
 from chview.components.alerts import render_mv_health_banner
 from chview.components.charts import render_engine_pie_chart
-from chview.components.tables import render_schema_table
 from chview.core.formatters import format_bytes, format_number
 
 

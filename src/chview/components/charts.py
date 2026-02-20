@@ -49,7 +49,7 @@ def render_throughput_charts(
             name="Rows Written",
             fill="tozeroy",
             fillcolor="rgba(229, 25, 67, 0.15)",
-            line=dict(color="#E51943", width=2),
+            line={"color": "#E51943", "width": 2},
             mode="lines",
         )
     )
@@ -60,18 +60,18 @@ def render_throughput_charts(
             name="Rows Read",
             fill="tozeroy",
             fillcolor="rgba(0, 124, 133, 0.15)",
-            line=dict(color="#007C85", width=2),
+            line={"color": "#007C85", "width": 2},
             mode="lines",
         )
     )
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(t=10, b=40, l=60, r=10),
+        margin={"t": 10, "b": 40, "l": 60, "r": 10},
         height=300,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.1)"),
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+        xaxis={"showgrid": False},
+        yaxis={"showgrid": True, "gridcolor": "rgba(128,128,128,0.1)"},
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -89,17 +89,17 @@ def render_throughput_charts(
             name="Avg Duration",
             fill="tozeroy",
             fillcolor="rgba(229, 25, 67, 0.08)",
-            line=dict(color="#E51943", width=2),
+            line={"color": "#E51943", "width": 2},
             mode="lines",
         )
     )
     fig2.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(t=10, b=40, l=60, r=10),
+        margin={"t": 10, "b": 40, "l": 60, "r": 10},
         height=250,
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.1)", title="ms"),
+        xaxis={"showgrid": False},
+        yaxis={"showgrid": True, "gridcolor": "rgba(128,128,128,0.1)", "title": "ms"},
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -129,10 +129,10 @@ def render_storage_treemap(partition_df: pd.DataFrame) -> None:
         hover_data={"rows": ":,", "compressed_bytes": ":,"},
     )
     fig.update_layout(
-        margin=dict(t=30, b=10, l=10, r=10),
+        margin={"t": 30, "b": 10, "l": 10, "r": 10},
         paper_bgcolor="rgba(0,0,0,0)",
         height=500,
-        coloraxis_colorbar=dict(title="Bytes on Disk"),
+        coloraxis_colorbar={"title": "Bytes on Disk"},
     )
     fig.update_traces(
         textinfo="label+value",
@@ -170,10 +170,10 @@ def render_engine_pie_chart(schema_df: pd.DataFrame) -> None:
         hole=0.4,
     )
     fig.update_layout(
-        margin=dict(t=10, b=10, l=10, r=10),
+        margin={"t": 10, "b": 10, "l": 10, "r": 10},
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(size=11)),
+        legend={"font": {"size": 11}},
         height=300,
     )
     fig.update_traces(textinfo="label+percent", textfont_size=11)

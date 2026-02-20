@@ -80,8 +80,8 @@ def render_sidebar_nav(
         )
     else:
         st.sidebar.markdown(
-            f'<div style="text-align: center; font-size: 0.85rem; color: #E51943;">'
-            f'<span style="font-size: 0.6rem;">&#9679;</span> Disconnected</div>',
+            '<div style="text-align: center; font-size: 0.85rem; color: #E51943;">'
+            '<span style="font-size: 0.6rem;">&#9679;</span> Disconnected</div>',
             unsafe_allow_html=True,
         )
         st.sidebar.markdown(

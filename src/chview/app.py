@@ -14,13 +14,16 @@ st.set_page_config(page_title="CHView", page_icon="📊", layout="wide")
 
 import pandas as pd  # noqa: E402  (must come after set_page_config)
 
-from chview.components.sidebar import render_connection_status, render_sidebar_nav
-from chview.components.styles import inject_custom_css
-from chview.db.repository import ClickHouseRepository
-from chview.pages.lineage import render_lineage_page
-from chview.pages.metrics import render_metrics_page
-from chview.pages.overview import render_overview_page
-from chview.pages.tables import render_tables_page
+from chview.components.sidebar import (  # noqa: E402
+    render_connection_status,
+    render_sidebar_nav,
+)
+from chview.components.styles import inject_custom_css  # noqa: E402
+from chview.db.repository import ClickHouseRepository  # noqa: E402
+from chview.pages.lineage import render_lineage_page  # noqa: E402
+from chview.pages.metrics import render_metrics_page  # noqa: E402
+from chview.pages.overview import render_overview_page  # noqa: E402
+from chview.pages.tables import render_tables_page  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # CSS
