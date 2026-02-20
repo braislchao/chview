@@ -35,7 +35,7 @@ def parse_source_tables(create_query: str, mv_database: str) -> list[str]:
     if not match:
         return []
 
-    select_part = create_query[match.start():]
+    select_part = create_query[match.start() :]
     table_pattern = r"(?:`[^`]+`|[a-zA-Z_]\w*)(?:\.(?:`[^`]+`|[a-zA-Z_]\w*))?"
     sources: set[str] = set()
 

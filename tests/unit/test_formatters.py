@@ -1,6 +1,5 @@
 """Unit tests for chview.core.formatters."""
 
-
 from chview.core.formatters import (
     format_bytes,
     format_duration_ms,
@@ -59,10 +58,10 @@ class TestFormatBytes:
         assert format_bytes(1024 * 1024) == "1.0 MB"
 
     def test_gigabytes(self) -> None:
-        assert format_bytes(1024 ** 3) == "1.0 GB"
+        assert format_bytes(1024**3) == "1.0 GB"
 
     def test_terabytes(self) -> None:
-        assert format_bytes(1024 ** 4) == "1.0 TB"
+        assert format_bytes(1024**4) == "1.0 TB"
 
     def test_partial_megabytes(self) -> None:
         result = format_bytes(1536 * 1024)  # 1.5 MB

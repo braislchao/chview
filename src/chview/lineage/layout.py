@@ -113,6 +113,7 @@ def calculate_positions(lineage: LineageGraph) -> dict[str, tuple[float, float]]
             if lvl == 0:
                 nodes.sort()
             else:
+
                 def sort_key(n: str, _map=incoming_map, _pos=positions) -> float:
                     parents = _map.get(n, [])
                     positioned = [_pos[p][1] for p in parents if p in _pos]

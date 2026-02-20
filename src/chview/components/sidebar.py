@@ -7,9 +7,7 @@ import streamlit as st
 from chview.core.formatters import format_number
 
 
-def render_database_selector(
-    databases: list[str], selected_db: str = "All"
-) -> str:
+def render_database_selector(databases: list[str], selected_db: str = "All") -> str:
     """Render database selector dropdown in sidebar.
 
     Args:
@@ -163,7 +161,9 @@ def render_schema_sidebar(schema_df) -> Optional[tuple[str, str]]:
             for _, row in db_tables.iterrows():
                 engine = row["engine"]
                 total_rows = row["total_rows"]
-                row_display = format_number(total_rows) if total_rows is not None else "N/A"
+                row_display = (
+                    format_number(total_rows) if total_rows is not None else "N/A"
+                )
 
                 # Icon by engine type
                 if engine == "MaterializedView":

@@ -17,12 +17,14 @@ class ClickHouseRepository:
     def fetch_databases(self) -> list[str]:
         """Fetch list of all user databases."""
         client = self._client.get_client()
-        result = client.query("""
+        result = client.query(
+            """
             SELECT name
             FROM system.databases
             WHERE name NOT IN ('system', 'INFORMATION_SCHEMA', 'information_schema')
             ORDER BY name
-        """)
+        """
+        )
         return [row[0] for row in result.result_rows]
 
     def fetch_schema(self, database: Optional[str] = None) -> pd.DataFrame:
@@ -157,9 +159,7 @@ class ClickHouseRepository:
                 columns=["view_name", "interval_start", "rows_written"],
             )
         except Exception:
-            return pd.DataFrame(
-                columns=["view_name", "interval_start", "rows_written"]
-            )
+            return pd.DataFrame(columns=["view_name", "interval_start", "rows_written"])
 
     def fetch_create_table(self, database: str, table: str) -> str:
         """Fetch the CREATE TABLE statement for a given table."""

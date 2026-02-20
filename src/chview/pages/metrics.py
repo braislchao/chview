@@ -49,7 +49,9 @@ def render_metrics_page(
         tab_charts, tab_errors, tab_kafka = st.tabs(["Charts", "Errors", "Kafka"])
 
         with tab_charts:
-            _render_charts_fragment(throughput_df, selected_mv, load_throughput, database)
+            _render_charts_fragment(
+                throughput_df, selected_mv, load_throughput, database
+            )
 
         with tab_errors:
             try:
@@ -74,7 +76,10 @@ def render_metrics_page(
 
 @st.fragment(run_every=300)
 def _render_charts_fragment(
-    throughput_df, selected_mv: Optional[str], load_throughput, database: Optional[str] = None
+    throughput_df,
+    selected_mv: Optional[str],
+    load_throughput,
+    database: Optional[str] = None,
 ) -> None:
     """Auto-refreshing chart fragment. Re-fetches throughput data every 5 minutes."""
     try:

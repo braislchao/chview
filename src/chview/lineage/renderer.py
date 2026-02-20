@@ -13,10 +13,42 @@ from chview.lineage.layout import calculate_positions, get_connected_subgraph
 
 # Node visual styles indexed by engine type
 _NODE_STYLES: dict[str, dict[str, str]] = {
-    "source":           {"bg": "#EEF8F8", "border": "#0E9AA7", "badge_bg": "#D4F0F0", "badge_text": "#0E9AA7", "shadow": "rgba(14,154,167,0.12)", "label": "Source",    "icon": "\u22B3"},
-    "MaterializedView": {"bg": "#FEF0F2", "border": "#E51943", "badge_bg": "#FCDDE3", "badge_text": "#C41538", "shadow": "rgba(229,25,67,0.10)",   "label": "Mat. View", "icon": "\u2B21"},
-    "target":           {"bg": "#FBF4EE", "border": "#D4956F", "badge_bg": "#F5E4D5", "badge_text": "#B87A55", "shadow": "rgba(212,149,111,0.12)",  "label": "Target",    "icon": "\u22B2"},
-    "implicit":         {"bg": "#F5F4F4", "border": "#B8B0B0", "badge_bg": "#EAE7E7", "badge_text": "#8A8282", "shadow": "rgba(176,168,168,0.10)",  "label": "Implicit",  "icon": "\u2218"},
+    "source": {
+        "bg": "#EEF8F8",
+        "border": "#0E9AA7",
+        "badge_bg": "#D4F0F0",
+        "badge_text": "#0E9AA7",
+        "shadow": "rgba(14,154,167,0.12)",
+        "label": "Source",
+        "icon": "\u22b3",
+    },
+    "MaterializedView": {
+        "bg": "#FEF0F2",
+        "border": "#E51943",
+        "badge_bg": "#FCDDE3",
+        "badge_text": "#C41538",
+        "shadow": "rgba(229,25,67,0.10)",
+        "label": "Mat. View",
+        "icon": "\u2b21",
+    },
+    "target": {
+        "bg": "#FBF4EE",
+        "border": "#D4956F",
+        "badge_bg": "#F5E4D5",
+        "badge_text": "#B87A55",
+        "shadow": "rgba(212,149,111,0.12)",
+        "label": "Target",
+        "icon": "\u22b2",
+    },
+    "implicit": {
+        "bg": "#F5F4F4",
+        "border": "#B8B0B0",
+        "badge_bg": "#EAE7E7",
+        "badge_text": "#8A8282",
+        "shadow": "rgba(176,168,168,0.10)",
+        "label": "Implicit",
+        "icon": "\u2218",
+    },
 }
 
 
@@ -177,11 +209,15 @@ def render_lineage_graph(
         )
         computed_positions = calculate_positions(lineage)
         positions: dict[str, tuple[float, float]] = {
-            node_id: cached_positions.get(node_id, computed_positions.get(node_id, (0.0, 0.0)))
+            node_id: cached_positions.get(
+                node_id, computed_positions.get(node_id, (0.0, 0.0))
+            )
             for node_id in lineage.nodes
         }
 
-        flow_state = _build_flow_state(lineage, positions, error_views, connected, highlight_node)
+        flow_state = _build_flow_state(
+            lineage, positions, error_views, connected, highlight_node
+        )
         st.session_state[state_key] = flow_state
 
     first_render = not st.session_state.get(ever_rendered_key, False)

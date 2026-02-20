@@ -36,7 +36,9 @@ def build_database_filter(
 
 def build_system_tables_query(database: Optional[str] = None) -> tuple[str, dict]:
     """Build query for fetching table schema information."""
-    where_clause, params = build_database_filter("database", database, exclude_system=True)
+    where_clause, params = build_database_filter(
+        "database", database, exclude_system=True
+    )
 
     query = f"""
         SELECT
@@ -54,7 +56,9 @@ def build_system_tables_query(database: Optional[str] = None) -> tuple[str, dict
 
 def build_materialized_views_query(database: Optional[str] = None) -> tuple[str, dict]:
     """Build query for fetching materialized views."""
-    where_clause, params = build_database_filter("database", database, exclude_system=False)
+    where_clause, params = build_database_filter(
+        "database", database, exclude_system=False
+    )
 
     if where_clause:
         where_clause += " AND engine = 'MaterializedView'"
@@ -77,7 +81,9 @@ def build_materialized_views_query(database: Optional[str] = None) -> tuple[str,
 
 def build_storage_metrics_query(database: Optional[str] = None) -> tuple[str, dict]:
     """Build query for fetching storage metrics."""
-    where_clause, params = build_database_filter("database", database, exclude_system=True)
+    where_clause, params = build_database_filter(
+        "database", database, exclude_system=True
+    )
 
     if where_clause:
         where_clause += " AND active = 1"
@@ -103,7 +109,9 @@ def build_storage_metrics_query(database: Optional[str] = None) -> tuple[str, di
 
 def build_partition_storage_query(database: Optional[str] = None) -> tuple[str, dict]:
     """Build query for fetching partition-level storage metrics."""
-    where_clause, params = build_database_filter("database", database, exclude_system=True)
+    where_clause, params = build_database_filter(
+        "database", database, exclude_system=True
+    )
 
     if where_clause:
         where_clause += " AND active = 1"
@@ -163,7 +171,9 @@ def build_cluster_info_query(database: Optional[str] = None) -> tuple[str, dict]
     return query, params
 
 
-def build_mv_throughput_query(hours: int = 24, database: Optional[str] = None) -> tuple[str, dict]:
+def build_mv_throughput_query(
+    hours: int = 24, database: Optional[str] = None
+) -> tuple[str, dict]:
     """Build query for fetching MV throughput metrics."""
     params = {"hours": hours}
 
@@ -192,7 +202,9 @@ def build_mv_throughput_query(hours: int = 24, database: Optional[str] = None) -
     return query, params
 
 
-def build_recent_throughput_query(minutes: int = 30, database: Optional[str] = None) -> tuple[str, dict]:
+def build_recent_throughput_query(
+    minutes: int = 30, database: Optional[str] = None
+) -> tuple[str, dict]:
     """Build query for fetching recent throughput data."""
     params = {"minutes": minutes}
 
@@ -217,7 +229,9 @@ def build_recent_throughput_query(minutes: int = 30, database: Optional[str] = N
     return query, params
 
 
-def build_mv_errors_query(hours: int = 24, database: Optional[str] = None) -> tuple[str, dict]:
+def build_mv_errors_query(
+    hours: int = 24, database: Optional[str] = None
+) -> tuple[str, dict]:
     """Build query for fetching MV errors."""
     params = {"hours": hours}
 

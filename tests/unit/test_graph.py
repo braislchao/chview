@@ -66,7 +66,9 @@ class TestBuildLineage:
         # The target table should get the engine from schema
         assert lineage.nodes["mydb.orders_agg"].engine == "SummingMergeTree"
 
-    def test_chained_mvs(self, multi_mv_df: pd.DataFrame, schema_df: pd.DataFrame) -> None:
+    def test_chained_mvs(
+        self, multi_mv_df: pd.DataFrame, schema_df: pd.DataFrame
+    ) -> None:
         lineage = build_lineage(multi_mv_df, schema_df)
         # Both MVs present
         assert "db.mv_a" in lineage.nodes
@@ -78,8 +80,13 @@ class TestBuildLineage:
 
     def test_empty_df_returns_empty_lineage(self) -> None:
         empty_df = pd.DataFrame(
-            columns=["database", "name", "create_table_query",
-                     "dependencies_database", "dependencies_table"]
+            columns=[
+                "database",
+                "name",
+                "create_table_query",
+                "dependencies_database",
+                "dependencies_table",
+            ]
         )
         lineage = build_lineage(empty_df)
         assert lineage.nodes == {}

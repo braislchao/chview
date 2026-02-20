@@ -69,7 +69,13 @@ def render_throughput_charts(
         plot_bgcolor="rgba(0,0,0,0)",
         margin={"t": 10, "b": 40, "l": 60, "r": 10},
         height=300,
-        legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "xanchor": "right", "x": 1},
+        legend={
+            "orientation": "h",
+            "yanchor": "bottom",
+            "y": 1.02,
+            "xanchor": "right",
+            "x": 1,
+        },
         xaxis={"showgrid": False},
         yaxis={"showgrid": True, "gridcolor": "rgba(128,128,128,0.1)"},
     )

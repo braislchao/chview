@@ -74,7 +74,9 @@ def render_overview_page(
                     ["database", "name", "engine", "total_rows", "total_bytes"]
                 ].copy()
                 display_df["total_rows"] = display_df["total_rows"].apply(format_number)
-                display_df["total_bytes"] = display_df["total_bytes"].apply(format_bytes)
+                display_df["total_bytes"] = display_df["total_bytes"].apply(
+                    format_bytes
+                )
                 display_df.columns = ["Database", "Name", "Engine", "Rows", "Size"]
                 st.dataframe(display_df, use_container_width=True, hide_index=True)
             else:

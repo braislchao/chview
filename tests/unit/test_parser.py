@@ -1,6 +1,5 @@
 """Unit tests for chview.lineage.parser."""
 
-
 from chview.lineage.parser import (
     _qualify_table_name,
     parse_source_tables,

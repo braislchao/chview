@@ -1,6 +1,5 @@
 """Unit tests for chview.db.queries."""
 
-
 from chview.db.queries import (
     build_database_filter,
     build_kafka_check_query,

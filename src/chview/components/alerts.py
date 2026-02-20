@@ -38,7 +38,9 @@ def render_mv_errors_table(error_df: Optional[pd.DataFrame]) -> None:
         st.info("No MV errors in the selected time window.")
         return
 
-    display_df = error_df[["view_name", "exception_code", "exception", "event_time"]].copy()
+    display_df = error_df[
+        ["view_name", "exception_code", "exception", "event_time"]
+    ].copy()
     display_df.columns = ["View", "Code", "Exception", "Time"]
     st.dataframe(display_df, use_container_width=True, hide_index=True)
 
@@ -91,7 +93,9 @@ def render_kafka_consumers(kafka_df: Optional[pd.DataFrame]) -> None:
                     unsafe_allow_html=True,
                 )
             with c2:
-                st.metric("Messages Read", format_number(row.get("num_messages_read", 0)))
+                st.metric(
+                    "Messages Read", format_number(row.get("num_messages_read", 0))
+                )
             with c3:
                 st.metric("Rebalances", int(row.get("rebalance_count", 0)))
             with c4:
