@@ -17,41 +17,46 @@ A modern web application for visualizing ClickHouse database schemas, materializ
 
 ## Quick Start
 
-### Installation
+### Option A — Full demo (app + local ClickHouse + live traffic)
+
+Requires only [Docker](https://docs.docker.com/get-docker/). One command starts everything using a `demo` Compose profile:
 
 ```bash
-# Clone the repository
 git clone https://github.com/braislchao/chview.git
 cd chview
-
-# Install in development mode
-pip install -e ".[dev,demo]"
-
-# Install pre-commit hooks
-pre-commit install
+make up-demo
 ```
 
-### Configuration
+This starts three containers:
 
-Create a `.env` file in the project root:
-
-```env
-CLICKHOUSE_HOST=your-host.clickhouse.cloud
-CLICKHOUSE_PORT=8443
-CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=your-password
-CLICKHOUSE_DATABASE=default
-CLICKHOUSE_SECURE=True
-```
-
-### Run
+| Container | What it does |
+|---|---|
+| `chview-clickhouse` | ClickHouse 24.8, seeded with the e-commerce demo schema on first boot |
+| `chview-app` | CHView UI at <http://localhost:8501> |
+| `chview-traffic` | Continuously inserts synthetic events, keeping all 9 MVs busy |
 
 ```bash
-# Using Make
-make run
+make logs          # follow all service logs
+make logs-traffic  # follow traffic generator only
+make down-demo     # stop (data preserved in Docker volume)
+make reset         # stop + wipe data (fresh start)
+```
 
-# Or directly
-streamlit run src/chview/app.py
+### Option B — App only (BYO ClickHouse)
+
+Already have a ClickHouse instance? Edit `.env.docker` with your credentials, then:
+
+```bash
+make up            # starts only the app container → http://localhost:8501
+make down          # stop
+```
+
+Or run locally without Docker:
+
+```bash
+pip install -e ".[dev,demo]"
+cp .env.example .env   # fill in your credentials
+make run               # streamlit run src/chview/app.py
 ```
 
 ## Development
@@ -74,11 +79,20 @@ chview/
 ### Commands
 
 ```bash
-make install    # Install dependencies
-make test       # Run tests with coverage
-make lint       # Run linters (ruff, mypy)
-make format     # Format code
-make run        # Run Streamlit app
+make install       # Install dependencies
+make test          # Run tests with coverage
+make lint          # Run linters (ruff, mypy)
+make format        # Format code
+make run           # Run Streamlit app locally (needs .env)
+
+# Docker
+make up            # App only (BYO ClickHouse via .env.docker)
+make up-demo       # App + ClickHouse + traffic generator
+make down          # Stop app
+make down-demo     # Stop full demo stack
+make reset         # Stop + wipe data volume
+make logs          # Follow all logs
+make logs-traffic  # Follow traffic generator logs
 ```
 
 ### Testing
@@ -99,11 +113,10 @@ pytest --cov=chview --cov-report=html
 
 ## Demo Mode
 
-Run with synthetic data without a ClickHouse connection:
+Two modes are available — see **Quick Start** above:
 
-```bash
-# Coming in Phase 2
-```
+- `make up-demo` — full local stack (ClickHouse + app + live traffic), no cloud account needed
+- `make up` — app only, point `.env.docker` at any ClickHouse instance
 
 ## License
 

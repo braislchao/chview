@@ -1,0 +1,49 @@
+services:
+  # ── Always-on: the CHView app ────────────────────────────────────────────
+  app:
+    build: .
+    container_name: chview-app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env.docker
+
+  # ── profile: demo ────────────────────────────────────────────────────────
+  # docker compose --profile demo up
+  # Adds a local ClickHouse instance + live traffic generator on top of the app.
+
+  clickhouse:
+    profiles: [demo]
+    image: clickhouse/clickhouse-server:24.8
+    container_name: chview-clickhouse
+    ports:
+      - "8123:8123"   # HTTP interface
+      - "9000:9000"   # Native protocol
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - ./demo/setup.sql:/docker-entrypoint-initdb.d/01-setup.sql:ro
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  traffic:
+    profiles: [demo]
+    build: .
+    container_name: chview-traffic
+    command: ["python", "demo/traffic.py"]
+    env_file:
+      - .env.docker
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  clickhouse-data:
