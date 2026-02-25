@@ -67,11 +67,11 @@ def render_lineage_page(
             legend_items += (
                 '<div style="display: flex; align-items: center; gap: 8px;">'
                 f'<span style="width: 28px; height: 16px; background: {style["bg"]}; border: 2px solid {style["border"]}; border-radius: 4px; display: inline-block;"></span>'
-                f'<span style="font-size: 13px; color: #495057; font-weight: 500;">{style["label"]}</span>'
+                f'<span style="font-size: 13px; color: #636B7F; font-weight: 500;">{style["label"]}</span>'
                 "</div>"
             )
         st.markdown(
-            f'<div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 1rem; padding: 12px 20px; background: linear-gradient(135deg, #fafbfc, #f5f6f8); border-radius: 8px; border: 1px solid #e9ecef;">'
+            f'<div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 1rem; padding: 12px 20px; background: hsl(220 88% 17% / 0.04); border-radius: 8px; border: 1px solid hsl(213 87% 15% / 0.20);">'
             f"{legend_items}"
             f"</div>",
             unsafe_allow_html=True,
@@ -115,7 +115,7 @@ def render_lineage_page(
                 )
             else:
                 st.markdown(
-                    '<div style="font-size: 0.95rem; padding: 0.4rem 0; opacity: 0.4;">Click a node to highlight its connections</div>',
+                    '<div style="font-size: 0.95rem; padding: 0.4rem 0; color: #A4ABBA;">Click a node to highlight its connections</div>',
                     unsafe_allow_html=True,
                 )
         with toolbar_right:

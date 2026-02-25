@@ -22,7 +22,7 @@ def render_database_selector(databases: list[str], selected_db: str = "All") -> 
     st.sidebar.markdown(
         """
     <div style="margin: 0.5rem 0 0.5rem 0;">
-        <div style="font-size: 0.75rem; font-weight: 600; color: #666; margin-bottom: 0.3rem;">
+        <div style="font-size: 0.75rem; font-weight: 600; color: #A4ABBA; margin-bottom: 0.3rem;">
             DATABASE
         </div>
     </div>
@@ -58,7 +58,7 @@ def render_sidebar_nav(
         """
     <div style="text-align: center; padding: 1.2rem 0 0.6rem 0;">
         <div style="font-size: 2.8rem; font-weight: 600; font-family: 'Inter', sans-serif; text-transform: lowercase; letter-spacing: 3px;">
-            <span style="color: #E07A8A;">ch</span><span style="font-weight: 300; color: #5A6B7C;">view</span>
+            <span style="color: hsl(348 80% 50% / 0.6);">ch</span><span style="font-weight: 300; color: #636B7F;">view</span>
         </div>
     </div>
     """,
@@ -68,7 +68,7 @@ def render_sidebar_nav(
     # Connection status block
     if connected:
         st.sidebar.markdown(
-            f'<div style="text-align: center; font-size: 0.85rem; color: #007C85;">'
+            f'<div style="text-align: center; font-size: 0.85rem; color: #10B77A;">'
             f'<span style="font-size: 0.6rem;">&#9679;</span> Connected · v{version}</div>',
             unsafe_allow_html=True,
         )
@@ -78,7 +78,7 @@ def render_sidebar_nav(
         )
     else:
         st.sidebar.markdown(
-            '<div style="text-align: center; font-size: 0.85rem; color: #E51943;">'
+            '<div style="text-align: center; font-size: 0.85rem; color: #FF5C4D;">'
             '<span style="font-size: 0.6rem;">&#9679;</span> Disconnected</div>',
             unsafe_allow_html=True,
         )

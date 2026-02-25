@@ -74,11 +74,11 @@ def render_kafka_consumers(kafka_df: Optional[pd.DataFrame]) -> None:
 
     def _status_color(status: str) -> str:
         return {
-            "Healthy": "#007C85",
-            "Warning": "#E5A019",
-            "Error": "#E51943",
-            "Inactive": "#B0A8A8",
-        }.get(status, "#B0A8A8")
+            "Healthy": "#10B77A",
+            "Warning": "#F47B16",
+            "Error": "#FF5C4D",
+            "Inactive": "#A4ABBA",
+        }.get(status, "#A4ABBA")
 
     for _, row in display_df.iterrows():
         table_name = f"{row['database']}.{row['table']}"

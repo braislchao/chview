@@ -14,38 +14,38 @@ from chview.lineage.layout import calculate_positions, get_connected_subgraph
 # Node visual styles indexed by engine type
 _NODE_STYLES: dict[str, dict[str, str]] = {
     "source": {
-        "bg": "#EEF8F8",
-        "border": "#0E9AA7",
-        "badge_bg": "#D4F0F0",
-        "badge_text": "#0E9AA7",
-        "shadow": "rgba(14,154,167,0.12)",
+        "bg": "#E8F8F7",
+        "border": "#07A4AE",
+        "badge_bg": "#D0F0ED",
+        "badge_text": "#058489",
+        "shadow": "rgba(7,164,174,0.12)",
         "label": "Source",
         "icon": "\u22b3",
     },
     "MaterializedView": {
-        "bg": "#FEF0F2",
-        "border": "#E51943",
-        "badge_bg": "#FCDDE3",
-        "badge_text": "#C41538",
-        "shadow": "rgba(229,25,67,0.10)",
+        "bg": "#FCE9ED",
+        "border": "#E51745",
+        "badge_bg": "#F9D3DB",
+        "badge_text": "#C21339",
+        "shadow": "rgba(229,23,69,0.10)",
         "label": "Mat. View",
         "icon": "\u2b21",
     },
     "target": {
-        "bg": "#FBF4EE",
-        "border": "#D4956F",
-        "badge_bg": "#F5E4D5",
-        "badge_text": "#B87A55",
-        "shadow": "rgba(212,149,111,0.12)",
+        "bg": "#F8F2EC",
+        "border": "#BF8659",
+        "badge_bg": "#F0E2D4",
+        "badge_text": "#A06F46",
+        "shadow": "rgba(191,134,89,0.12)",
         "label": "Target",
         "icon": "\u22b2",
     },
     "implicit": {
-        "bg": "#F5F4F4",
-        "border": "#B8B0B0",
-        "badge_bg": "#EAE7E7",
-        "badge_text": "#8A8282",
-        "shadow": "rgba(176,168,168,0.10)",
+        "bg": "#F1F2F5",
+        "border": "#A4ABBA",
+        "badge_bg": "#E5E7ED",
+        "badge_text": "#636B7F",
+        "shadow": "rgba(164,171,186,0.10)",
         "label": "Implicit",
         "icon": "\u2218",
     },
@@ -103,7 +103,7 @@ def _build_flow_state(
             "fontSize": "14px",
             "fontFamily": "Inter, -apple-system, sans-serif",
             "fontWeight": "400",
-            "color": "#25253D",
+            "color": "#0D1525",
             "width": "260px",
             "textAlign": "left",
             "cursor": "pointer",
@@ -116,9 +116,9 @@ def _build_flow_state(
             )
 
         if has_error and not is_dimmed:
-            node_style["border"] = "2px solid #E51943"
+            node_style["border"] = "2px solid #FF5C4D"
             node_style["boxShadow"] = (
-                "0 0 0 3px rgba(229,25,67,0.15), 0 2px 8px rgba(229,25,67,0.20)"
+                "0 0 0 3px rgba(255,92,77,0.15), 0 2px 8px rgba(255,92,77,0.20)"
             )
 
         if is_dimmed:
@@ -146,7 +146,7 @@ def _build_flow_state(
 
     for i, edge in enumerate(lineage.edges):
         is_mv = edge.source in lineage.mv_names
-        edge_color = "#E51943" if is_mv else "#0E9AA7"
+        edge_color = "#E51745" if is_mv else "#07A4AE"
         is_dimmed = connected is not None and (
             edge.source not in connected or edge.target not in connected
         )
@@ -239,7 +239,7 @@ def render_lineage_graph(
         min_zoom=0.3,
         allow_new_edges=False,
         hide_watermark=True,
-        style={"background": "#fafbfc"},
+        style={"background": "#FAFAFA"},
     )
 
     # Cache positions from component result (preserves drag across highlight changes)

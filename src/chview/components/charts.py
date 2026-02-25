@@ -7,6 +7,24 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+# F0 design system colors for Plotly (hex – CSS vars don't work in Plotly)
+_F0 = {
+    "accent": "#E51745",
+    "viridian": "#07A4AE",
+    "grid": "rgba(13, 21, 37, 0.06)",
+}
+_F0_CATEGORICAL = [
+    "#07A4AE",
+    "#5B9CF5",
+    "#94BE44",
+    "#C76B8A",
+    "#F98332",
+    "#5758EB",
+    "#305C48",
+    "#BF8659",
+]
+_F0_TREEMAP_SCALE = ["#E8F8F7", "#07A4AE"]
+
 
 def render_throughput_charts(
     throughput_df: pd.DataFrame, selected_mv: Optional[str] = None
@@ -48,8 +66,8 @@ def render_throughput_charts(
             y=chart_data["rows_written"],
             name="Rows Written",
             fill="tozeroy",
-            fillcolor="rgba(229, 25, 67, 0.15)",
-            line={"color": "#E51943", "width": 2},
+            fillcolor="rgba(229, 23, 69, 0.15)",
+            line={"color": _F0["accent"], "width": 2},
             mode="lines",
         )
     )
@@ -59,8 +77,8 @@ def render_throughput_charts(
             y=chart_data["rows_read"],
             name="Rows Read",
             fill="tozeroy",
-            fillcolor="rgba(0, 124, 133, 0.15)",
-            line={"color": "#007C85", "width": 2},
+            fillcolor="rgba(7, 164, 174, 0.15)",
+            line={"color": _F0["viridian"], "width": 2},
             mode="lines",
         )
     )
@@ -77,7 +95,7 @@ def render_throughput_charts(
             "x": 1,
         },
         xaxis={"showgrid": False},
-        yaxis={"showgrid": True, "gridcolor": "rgba(128,128,128,0.1)"},
+        yaxis={"showgrid": True, "gridcolor": _F0["grid"]},
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -94,8 +112,8 @@ def render_throughput_charts(
             y=duration_data["avg_duration_ms"],
             name="Avg Duration",
             fill="tozeroy",
-            fillcolor="rgba(229, 25, 67, 0.08)",
-            line={"color": "#E51943", "width": 2},
+            fillcolor="rgba(229, 23, 69, 0.08)",
+            line={"color": _F0["accent"], "width": 2},
             mode="lines",
         )
     )
@@ -105,7 +123,7 @@ def render_throughput_charts(
         margin={"t": 10, "b": 40, "l": 60, "r": 10},
         height=250,
         xaxis={"showgrid": False},
-        yaxis={"showgrid": True, "gridcolor": "rgba(128,128,128,0.1)", "title": "ms"},
+        yaxis={"showgrid": True, "gridcolor": _F0["grid"], "title": "ms"},
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -131,7 +149,7 @@ def render_storage_treemap(partition_df: pd.DataFrame) -> None:
         path=["database", "table", "partition"],
         values="bytes_on_disk",
         color="bytes_on_disk",
-        color_continuous_scale=["#E6F5F6", "#007C85"],
+        color_continuous_scale=_F0_TREEMAP_SCALE,
         hover_data={"rows": ":,", "compressed_bytes": ":,"},
     )
     fig.update_layout(
@@ -163,16 +181,7 @@ def render_engine_pie_chart(schema_df: pd.DataFrame) -> None:
         engine_counts,
         values="Count",
         names="Engine",
-        color_discrete_sequence=[
-            "#E8A5AF",
-            "#8FD3D8",
-            "#E8C4B0",
-            "#F5D4A1",
-            "#F0B8C0",
-            "#A8B5C4",
-            "#C8C8C8",
-            "#D8C8C8",
-        ],
+        color_discrete_sequence=_F0_CATEGORICAL,
         hole=0.4,
     )
     fig.update_layout(
