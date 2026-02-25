@@ -9,8 +9,11 @@ from chview.core.formatters import (
 
 
 class TestFormatNumber:
-    def test_none_returns_zero(self) -> None:
-        assert format_number(None) == "0"
+    def test_none_returns_dash(self) -> None:
+        assert format_number(None) == "—"
+
+    def test_nan_returns_dash(self) -> None:
+        assert format_number(float("nan")) == "—"
 
     def test_small_integer(self) -> None:
         assert format_number(42) == "42"
@@ -45,8 +48,11 @@ class TestFormatNumber:
 
 
 class TestFormatBytes:
-    def test_none_returns_zero_b(self) -> None:
-        assert format_bytes(None) == "0 B"
+    def test_none_returns_dash(self) -> None:
+        assert format_bytes(None) == "—"
+
+    def test_nan_returns_dash(self) -> None:
+        assert format_bytes(float("nan")) == "—"
 
     def test_bytes(self) -> None:
         assert format_bytes(512) == "512.0 B"
