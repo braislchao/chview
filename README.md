@@ -7,6 +7,14 @@ A modern web application for visualizing ClickHouse database schemas, materializ
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+<div align="center">
+  <br />
+  <a href="#quick-start">
+    <img src="docs/screenshot.png" alt="CHView — lineage graph" width="100%" />
+  </a>
+  <br /><br />
+</div>
+
 ## Features
 
 - **Interactive Lineage Graphs**: Visualize materialized view dependencies with an interactive flow diagram
