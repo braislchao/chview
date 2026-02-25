@@ -1,5 +1,6 @@
 """Data formatting utilities."""
 
+import math
 from typing import Optional, Union
 
 
@@ -12,8 +13,8 @@ def format_number(n: Optional[Union[int, float]]) -> str:
     Returns:
         Formatted string like "1.2K", "3.4M", etc.
     """
-    if n is None:
-        return "0"
+    if n is None or (isinstance(n, float) and math.isnan(n)):
+        return "—"
 
     n = float(n)
     if abs(n) < 1_000:
@@ -36,8 +37,8 @@ def format_bytes(n: Optional[Union[int, float]]) -> str:
     Returns:
         Formatted string like "1.5 GB", "256 MB", etc.
     """
-    if n is None:
-        return "0 B"
+    if n is None or (isinstance(n, float) and math.isnan(n)):
+        return "—"
 
     n = float(n)
     for unit in ["B", "KB", "MB", "GB", "TB"]:

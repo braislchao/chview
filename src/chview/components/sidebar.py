@@ -56,9 +56,9 @@ def render_sidebar_nav(
     # Logo
     st.sidebar.markdown(
         """
-    <div style="text-align: center; padding: 1.2rem 0 0.6rem 0;">
-        <div style="font-size: 2.8rem; font-weight: 600; font-family: 'Inter', sans-serif; text-transform: lowercase; letter-spacing: 3px;">
-            <span style="color: hsl(348 80% 50% / 0.6);">ch</span><span style="font-weight: 300; color: #636B7F;">view</span>
+    <div style="text-align: center; padding: 1.5rem 0 0.75rem 0;">
+        <div style="font-size: 2rem; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;">
+            <span style="font-weight: 700; color: var(--accent);">ch</span><span style="font-weight: 400; color: var(--fg-default);">view</span>
         </div>
     </div>
     """,
